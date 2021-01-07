@@ -7,36 +7,39 @@ const JobSearch = () => {
   const [searchValue, setSearchValue] = useState('');
   const [fullTime, setFullTime] = useState(false);
   const [location, setLocation] = useState('');
-
-  const handleEnter = (e) => {
-    if (e.key === 'Enter') {
-      searchJobs();
-    }
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    window.addEventListener('keydown', handleEnter);
-    return () => {
-      window.removeEventListener('keydown', handleEnter);
-    };
-    // eslint-disable-next-line
+    const jobs = localStorage.getItem('job-list');
+    jobs && setData(JSON.parse(jobs));
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('job-list', JSON.stringify(data));
+  });
+
   const searchJobs = () => {
+    console.log(`searching with ${searchValue}, ${fullTime}, ${location}`);
+    setLoading(true);
     axios
-      .get(
-        'https://cors-anywhere.herokuapp.com/jobs.github.com/positions.json',
-        {
-          params: {
-            description: searchValue,
-            full_time: fullTime,
-            location: location,
-          },
-        }
-      )
-      .then((response) => setData(response.data))
-      .catch((error) => console.log(error));
-    console.log('searching jobs');
+      .get('http://localhost:8080/https://jobs.github.com/positions.json', {
+        params: {
+          description: searchValue,
+          full_time: fullTime,
+          location: location,
+        },
+      })
+      .then((response) => {
+        setLoading(false);
+        if (Array.isArray(response.data)) {
+          setData(response.data);
+        } else setError(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setError(true);
+      });
   };
 
   return (
@@ -95,7 +98,7 @@ const JobSearch = () => {
             <h2 className='font-display uppercase tracking-wide font-bold text-sm text-gray-400'>
               Location
             </h2>
-            <div className='h-12 relative rounded-md shadow-sm'>
+            <div className='h-12 mt-2 relative rounded-md shadow-sm'>
               <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
                 <svg
                   className='w-5 h-5 text-gray-400'
@@ -123,7 +126,9 @@ const JobSearch = () => {
           </div>
         </div>
         <div className='flex-1 px-3'>
-          {data &&
+          {loading ? (
+            <div className='loader'>Loading...</div>
+          ) : Array.isArray(data) ? (
             data.map((job) => (
               <Card
                 id={job.id}
@@ -137,7 +142,10 @@ const JobSearch = () => {
                 howToApply={job.how_to_apply}
                 type={job.type}
               />
-            ))}
+            ))
+          ) : error ? (
+            <div>Something went wrong :( </div>
+          ) : null}
         </div>
       </div>
     </div>

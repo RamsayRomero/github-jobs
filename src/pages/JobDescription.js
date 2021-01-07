@@ -9,20 +9,18 @@ const JobDescription = () => {
 
   useEffect(() => {
     axios
-      .get(
-        `https://cors-anywhere.herokuapp.com/jobs.github.com/positions/${id}.json`
-      )
+      .get(`http://localhost:8080/https://jobs.github.com/positions/${id}.json`)
       .then((response) => setData(response.data))
       .catch((error) => console.log(error));
   }, [id]);
 
   return !data ? (
-    <div>Loading...</div>
+    <div className='loader'>Loading...</div>
   ) : (
     <div className='px-3 lg:flex lg:space-x-4 lg:mt-6'>
       <div className='lg:w-1/4 lg:flex-shrink-0'>
         <button
-          onClick={() => history.push('/')}
+          onClick={() => history.goBack()}
           className='mt-5 flex items-center text-blue-500  text-sm font-medium font-display lg:mt-0'
         >
           <svg
@@ -54,9 +52,9 @@ const JobDescription = () => {
           <h2 className='mt-9 text-gray-800 font-bold text-2xl lg:mt-0'>
             {data.title}
           </h2>
-          <span className='lg:flex items-center justify-center mt-4 px-2 py-1.5 border rounded border-gray-800 text-gray-800 text-xs font-bold lg:mt-0'>
+          <div className='inline-block items-center justify-center mt-4 px-2 py-1.5 border rounded border-gray-800 text-gray-800 text-xs font-bold lg:flex lg:mt-0'>
             {data.type}
-          </span>
+          </div>
         </div>
         <div className='flex items-center mt-4 text-gray-400 text-sm font-medium'>
           <svg
@@ -77,7 +75,11 @@ const JobDescription = () => {
         </div>
         <div className='flex mt-6'>
           <div className='mr-4 flex-shrink-0'>
-            <img className='h-12 w-12 rounded' src={data.company_logo} alt='' />
+            <img
+              className='h-12 w-12 rounded object-contain'
+              src={data.company_logo}
+              alt=''
+            />
           </div>
           <div>
             <h3 className='text-lg font-bold text-gray-800'>{data.company}</h3>

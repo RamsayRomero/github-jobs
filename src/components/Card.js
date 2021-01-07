@@ -4,15 +4,51 @@ import { Link } from 'react-router-dom';
 const Card = ({
   id,
   companyLogo,
-  url,
   createdAt,
   company,
   location,
   title,
   type,
-  decription,
-  howToApply,
 }) => {
+  function timeSince(date) {
+    var seconds = Math.floor((new Date() - date) / 1000);
+    var interval = seconds / 31536000;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? Math.floor(interval) + ' year ago'
+        : Math.floor(interval) + ' years ago';
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? Math.floor(interval) + ' month ago'
+        : Math.floor(interval) + ' months ago';
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? Math.floor(interval) + ' day ago'
+        : Math.floor(interval) + ' days ago';
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? Math.floor(interval) + ' hour ago'
+        : Math.floor(interval) + ' hours ago';
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) === 1
+        ? Math.floor(interval) + ' minute ago'
+        : Math.floor(interval) + ' minutes ago';
+    }
+    return Math.floor(interval) === 1
+      ? Math.floor(interval) + ' second ago'
+      : Math.floor(interval) + ' seconds ago';
+  }
+
+  const dateCreated = new Date(createdAt);
+
   return (
     <Link
       to={id}
@@ -69,7 +105,7 @@ const Card = ({
                 />
               </svg>
 
-              <span className='ml-1.5'>5 days ago</span>
+              <span className='ml-1.5'>{timeSince(dateCreated)}</span>
             </div>
           </div>
         </div>

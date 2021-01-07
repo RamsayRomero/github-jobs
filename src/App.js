@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
-import JobDescription from './containers/JobDescription';
-import JobSearch from './containers/JobSearch';
+import JobDescription from './pages/JobDescription';
+import JobSearch from './pages/JobSearch';
 
 const App = () => {
   return (
