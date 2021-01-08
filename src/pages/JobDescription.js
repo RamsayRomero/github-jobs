@@ -4,19 +4,30 @@ import { useHistory, useParams } from 'react-router-dom';
 
 const JobDescription = () => {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   let { id } = useParams();
   let history = useHistory();
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`http://localhost:8080/https://jobs.github.com/positions/${id}.json`)
-      .then((response) => setData(response.data))
-      .catch((error) => console.log(error));
+      .then((response) => {
+        setData(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setError(true);
+      });
   }, [id]);
 
-  return !data ? (
+  return loading ? (
     <div className='loader'>Loading...</div>
-  ) : (
+  ) : error ? (
+    <div className='text-center'>Something went wrong :(</div>
+  ) : data ? (
     <div className='px-3 lg:flex lg:space-x-4 lg:mt-6'>
       <div className='lg:w-1/4 lg:flex-shrink-0'>
         <button
@@ -109,7 +120,7 @@ const JobDescription = () => {
         ></div>
       </div>
     </div>
-  );
+  ) : null;
 };
 
 export default JobDescription;

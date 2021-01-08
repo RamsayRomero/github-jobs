@@ -4,11 +4,6 @@ import Card from '../components/Card';
 
 const JobSearch = () => {
   const [data, setData] = useState(null);
-  const [searchValue, setSearchValue] = useState('');
-  const [fullTime, setFullTime] = useState(false);
-  const [location, setLocation] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
 
   useEffect(() => {
     const jobs = localStorage.getItem('job-list');
@@ -19,8 +14,13 @@ const JobSearch = () => {
     localStorage.setItem('job-list', JSON.stringify(data));
   });
 
+  const [searchValue, setSearchValue] = useState('');
+  const [fullTime, setFullTime] = useState(false);
+  const [location, setLocation] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+
   const searchJobs = () => {
-    console.log(`searching with ${searchValue}, ${fullTime}, ${location}`);
     setLoading(true);
     axios
       .get('http://localhost:8080/https://jobs.github.com/positions.json', {
@@ -144,7 +144,7 @@ const JobSearch = () => {
               />
             ))
           ) : error ? (
-            <div>Something went wrong :( </div>
+            <div className='text-center'>Something went wrong :( </div>
           ) : null}
         </div>
       </div>
