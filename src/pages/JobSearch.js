@@ -1,51 +1,72 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import Card from '../components/Card';
+import PaginationTab from '../components/PaginationTab';
 
-const JobSearch = () => {
+const JobSearch = (props) => {
   const [data, setData] = useState(null);
-
-  useEffect(() => {
-    const jobs = localStorage.getItem('job-list');
-    jobs && setData(JSON.parse(jobs));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('job-list', JSON.stringify(data));
-  });
-
   const [searchValue, setSearchValue] = useState('');
   const [fullTime, setFullTime] = useState(false);
   const [location, setLocation] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const searchJobs = () => {
+  const inputEl = useRef(null);
+
+  const searchJobs = (e) => {
+    e.preventDefault();
     setLoading(true);
-    axios
-      .get('http://localhost:8080/https://jobs.github.com/positions.json', {
-        params: {
-          description: searchValue,
-          full_time: fullTime,
-          location: location,
-        },
-      })
-      .then((response) => {
-        setLoading(false);
-        if (Array.isArray(response.data)) {
-          setData(response.data);
-        } else setError(true);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setError(true);
-      });
+    if (!searchValue && !fullTime && !location) {
+      props.history.push('/');
+      setLoading(false);
+    } else {
+      props.history.push(
+        `/jobs?description=${searchValue}&full_time=${fullTime}&location=${location}&page=1`
+      );
+    }
   };
+
+  useEffect(() => {
+    setLoading(true);
+    let query = new URLSearchParams(props.location.search);
+    if (
+      query.get('description') ||
+      query.get('full_time') ||
+      query.get('location')
+    ) {
+      setSearchValue(query.get('description'));
+      setFullTime(query.get('full_time') === 'true');
+      setLocation(query.get('location'));
+      axios
+        .get('http://localhost:8080/https://jobs.github.com/positions.json', {
+          params: {
+            description: query.get('description'),
+            full_time: query.get('full_time'),
+            location: query.get('location'),
+            page: query.get('page'),
+          },
+        })
+        .then((response) => {
+          setLoading(false);
+          if (Array.isArray(response.data)) {
+            setData(response.data);
+          } else setError(true);
+        })
+        .catch((error) => {
+          setLoading(false);
+          setError(true);
+        });
+    } else {
+      setLoading(false);
+      setData(null);
+    }
+  }, [props.location]);
 
   return (
     <div>
       <div className='flex items-center justify-center h-28 px-3 mx-3 bg-search-background bg-cover bg-center font-body rounded-md'>
-        <div className='flex flex-1 max-w-xs rounded-md h-12'>
+        <form className='flex flex-1 max-w-xs rounded-md h-12'>
           <div className='relative flex items-stretch flex-grow'>
             <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
               <svg
@@ -65,22 +86,22 @@ const JobSearch = () => {
             </div>
             <input
               type='text'
-              className='focus:ring-blue-600 focus:border-blue-600 block w-full rounded-l-md pl-10 sm:text-sm border-gray-300 truncate'
+              className='focus:ring-blue-600 focus:border-blue-600 block w-full rounded-l-md pl-10 text-sm border-gray-300 truncate'
               placeholder='Title, companies, expertise or benefits'
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
           </div>
           <button
-            onClick={() => searchJobs()}
+            onClick={searchJobs}
             className='-ml-px px-4 py-2 border border-gray-300 text-sm font-medium rounded-r-md text-white bg-blue-500 hover:bg-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 focus:z-10'
           >
             Search
           </button>
-        </div>
+        </form>
       </div>
       <div className='lg:flex'>
-        <div className='lg:w-1/3'>
+        <form onSubmit={searchJobs} className='lg:w-1/3'>
           <div className='flex items-center px-7 mt-7 font-display font-medium text-gray-600'>
             <input
               className=''
@@ -88,9 +109,12 @@ const JobSearch = () => {
               id='full-time'
               name='full-time'
               checked={fullTime}
-              onChange={(e) => setFullTime(e.target.checked)}
+              onChange={(e) => {
+                setFullTime(e.target.checked);
+                inputEl.current.focus();
+              }}
             />
-            <label className='ml-3' htmlFor='full-time'>
+            <label className='ml-3 text-sm' htmlFor='full-time'>
               Full time only
             </label>
           </div>
@@ -116,15 +140,16 @@ const JobSearch = () => {
                 </svg>
               </div>
               <input
+                ref={inputEl}
                 type='text'
-                className='focus:ring-blue-600 focus:border-blue-600 block h-full w-full pl-10 sm:text-sm border-gray-300 rounded-md'
+                className='focus:ring-blue-600 focus:border-blue-600 block h-full w-full pl-10 text-sm border-gray-300 rounded-md'
                 placeholder='City, state, zipcode or country'
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
               />
             </div>
           </div>
-        </div>
+        </form>
         <div className='flex-1 px-3'>
           {loading ? (
             <div className='loader'>Loading...</div>
@@ -148,8 +173,15 @@ const JobSearch = () => {
           ) : null}
         </div>
       </div>
+      {data && (
+        <div className='pt-4 flex justify-end px-3 space-x-3'>
+          <PaginationTab history={props.history} page={1} />
+          <PaginationTab history={props.history} page={2} />
+          <PaginationTab history={props.history} page={3} />
+        </div>
+      )}
     </div>
   );
 };
 
-export default JobSearch;
+export default withRouter(JobSearch);

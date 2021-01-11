@@ -28,7 +28,7 @@ const JobDescription = () => {
   ) : error ? (
     <div className='text-center'>Something went wrong :(</div>
   ) : data ? (
-    <div className='px-3 lg:flex lg:space-x-4 lg:mt-6'>
+    <div className='px-3 lg:flex lg:space-x-8 lg:mt-6'>
       <div className='lg:w-1/4 lg:flex-shrink-0'>
         <button
           onClick={() => history.goBack()}
@@ -58,11 +58,14 @@ const JobDescription = () => {
           dangerouslySetInnerHTML={{ __html: data.how_to_apply }}
         ></div>
       </div>
-      <div>
+      <div className='mt-4'>
         <div className='lg:flex lg:space-x-4'>
-          <h2 className='mt-9 text-gray-800 font-bold text-2xl lg:mt-0'>
+          <a
+            href={data.url}
+            className='mt-9 block text-gray-800 font-bold text-2xl lg:mt-0'
+          >
             {data.title}
-          </h2>
+          </a>
           <div className='inline-block items-center justify-center mt-4 px-2 py-1.5 border rounded border-gray-800 text-gray-800 text-xs font-bold lg:flex lg:mt-0'>
             {data.type}
           </div>

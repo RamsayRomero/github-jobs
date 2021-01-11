@@ -54,7 +54,7 @@ const Card = ({
       to={id}
       className='mt-5 p-3 flex bg-white shadow transition-shadow hover:shadow-lg rounded text-gray-700'
     >
-      <div className='mr-4 flex-shrink-0'>
+      <div className='mr-3 flex-shrink-0'>
         <img
           className='h-24 w-24 object-contain rounded'
           src={companyLogo}
@@ -70,10 +70,10 @@ const Card = ({
           </div>
         </div>
         <div className='self-end flex-shrink-0'>
-          <div className='flex mt-5 text-gray-400 font-medium text-xs'>
+          <div className='flex space-x-3 mt-5 text-gray-400 font-medium text-xs'>
             <div className='flex items-center'>
               <svg
-                className='h-4 w-4 inline'
+                className='h-4 w-4 inline flex-shrink-0'
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
                 viewBox='0 0 24 24'
@@ -89,9 +89,9 @@ const Card = ({
 
               <span className='ml-1.5'>{location}</span>
             </div>
-            <div className='ml-7 flex items-center'>
+            <div className='flex items-center'>
               <svg
-                className='h-4 w-4 inline'
+                className='h-4 w-4 inline flex-shrink-0'
                 xmlns='http://www.w3.org/2000/svg'
                 fill='none'
                 viewBox='0 0 24 24'

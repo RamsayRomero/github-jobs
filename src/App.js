@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import JobDescription from './pages/JobDescription';
 import JobSearch from './pages/JobSearch';
 
@@ -12,12 +12,17 @@ const App = () => {
             <span className='font-bold'>Github</span>{' '}
             <span className='font-light'>Jobs</span>
           </header>
-          <Route exact path='/'>
-            <JobSearch />
-          </Route>
-          <Route path='/:id'>
-            <JobDescription />
-          </Route>
+          <Switch>
+            <Route exact path='/'>
+              <JobSearch />
+            </Route>
+            <Route path='/jobs'>
+              <JobSearch />
+            </Route>
+            <Route path='/:id'>
+              <JobDescription />
+            </Route>
+          </Switch>
         </div>
       </div>
     </BrowserRouter>
