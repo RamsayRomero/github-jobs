@@ -66,7 +66,7 @@ const JobSearch = (props) => {
   return (
     <div>
       <div className='flex items-center justify-center h-28 px-3 mx-3 bg-search-background bg-cover bg-center font-body rounded-md'>
-        <form className='flex flex-1 max-w-xs rounded-md h-12'>
+        <form className='flex flex-1 max-w-sm rounded-md h-12'>
           <div className='relative flex items-stretch flex-grow'>
             <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none'>
               <svg
@@ -153,7 +153,7 @@ const JobSearch = (props) => {
         <div className='flex-1 px-3'>
           {loading ? (
             <div className='loader'>Loading...</div>
-          ) : Array.isArray(data) ? (
+          ) : data ? (
             data.map((job) => (
               <Card
                 id={job.id}

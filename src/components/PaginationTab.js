@@ -10,6 +10,7 @@ const PaginationTab = ({ history, page }) => {
   location = location.slice(0, -1) + page;
   return (
     <button
+      data-testid={`page${page}`}
       ref={buttonRef}
       onClick={() => {
         history.push(location);
