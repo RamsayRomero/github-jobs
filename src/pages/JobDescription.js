@@ -56,7 +56,7 @@ const JobDescription = () => {
           How to apply
         </h2>
         <div
-          className='mt-4 font-display font-medium text-sm text-gray-800'
+          className='mt-4 font-display font-medium text-sm text-gray-800 how-to-apply'
           dangerouslySetInnerHTML={{ __html: data.how_to_apply }}
         ></div>
       </div>

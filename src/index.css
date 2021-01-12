@@ -14,7 +14,7 @@
   @apply pb-3;
 }
 
-.how-to-apply > p a {
+.how-to-apply a {
   word-wrap: break-word;
 }
 
