@@ -39,14 +39,17 @@ const JobSearch = (props) => {
       setFullTime(query.get('full_time') === 'true');
       setLocation(query.get('location'));
       axios
-        .get('http://localhost:8080/https://jobs.github.com/positions.json', {
-          params: {
-            description: query.get('description'),
-            full_time: query.get('full_time'),
-            location: query.get('location'),
-            page: query.get('page'),
-          },
-        })
+        .get(
+          'https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions.json',
+          {
+            params: {
+              description: query.get('description'),
+              full_time: query.get('full_time'),
+              location: query.get('location'),
+              page: query.get('page'),
+            },
+          }
+        )
         .then((response) => {
           setLoading(false);
           if (Array.isArray(response.data)) {

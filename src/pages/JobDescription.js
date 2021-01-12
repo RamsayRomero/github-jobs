@@ -12,7 +12,9 @@ const JobDescription = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get(`http://localhost:8080/https://jobs.github.com/positions/${id}.json`)
+      .get(
+        `https://cors-anywhere.herokuapp.com/https://jobs.github.com/positions/${id}.json`
+      )
       .then((response) => {
         setData(response.data);
         setLoading(false);
