@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import Card from '../components/Card';
-import PaginationTab from '../components/PaginationTab';
+import Paginator from '../components/Paginator';
 
 const JobSearch = (props) => {
   const [data, setData] = useState(null);
@@ -46,7 +46,6 @@ const JobSearch = (props) => {
               description: query.get('description'),
               full_time: query.get('full_time'),
               location: query.get('location'),
-              page: query.get('page'),
             },
           }
         )
@@ -65,6 +64,10 @@ const JobSearch = (props) => {
       setData(null);
     }
   }, [props.location]);
+
+  const indexOfLastJob =
+    props.location.search.charAt(props.location.search.length - 1) * 10;
+  const indexOfFirstJob = indexOfLastJob - 10;
 
   return (
     <div>
@@ -157,32 +160,28 @@ const JobSearch = (props) => {
           {loading ? (
             <div className='loader'>Loading...</div>
           ) : data ? (
-            data.map((job) => (
-              <Card
-                id={job.id}
-                key={job.id}
-                companyLogo={job.company_logo}
-                createdAt={job.created_at}
-                company={job.company}
-                location={job.location}
-                title={job.title}
-                description={job.description}
-                howToApply={job.how_to_apply}
-                type={job.type}
-              />
-            ))
+            data
+              .slice(indexOfFirstJob, indexOfLastJob)
+              .map((job) => (
+                <Card
+                  id={job.id}
+                  key={job.id}
+                  companyLogo={job.company_logo}
+                  createdAt={job.created_at}
+                  company={job.company}
+                  location={job.location}
+                  title={job.title}
+                  description={job.description}
+                  howToApply={job.how_to_apply}
+                  type={job.type}
+                />
+              ))
           ) : error ? (
             <div className='text-center'>Something went wrong :( </div>
           ) : null}
         </div>
       </div>
-      {data && (
-        <div className='pt-4 flex justify-end px-3 space-x-3'>
-          <PaginationTab history={props.history} page={1} />
-          <PaginationTab history={props.history} page={2} />
-          <PaginationTab history={props.history} page={3} />
-        </div>
-      )}
+      {data && <Paginator history={props.history} totalJobs={data.length} />}
     </div>
   );
 };
